@@ -210,7 +210,7 @@ timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 status VARCHAR(10) NULL,
 PRIMARY KEY (admission_id),
 FOREIGN KEY (doctor_id)
-REFERENCES doctors (doctor_id),
+REFERENCES admitting_doctors (doctor_id),
 FOREIGN KEY (patient_id)
 REFERENCES patients (patient_id),
 FOREIGN KEY (service_id)
@@ -225,13 +225,14 @@ AUTO_INCREMENT = 1000;
 DROP TABLE IF EXISTS assigned_doctors ;
 
 CREATE TABLE IF NOT EXISTS assigned_doctors (
+assignment_id INT NOT NULL AUTO_INCREMENT,
 doctor_id INT NOT NULL,
-admission_id INT NOT NULL,
-PRIMARY KEY (doctor_id, admission_id),
+patient_id INT NOT NULL,
+PRIMARY KEY (assignment_id),
 FOREIGN KEY (doctor_id)
 REFERENCES doctors (doctor_id),
-FOREIGN KEY (admission_id)
-REFERENCES admissions(admission_id))
+FOREIGN KEY (patient_id)
+REFERENCES patients (patient_id))
 AUTO_INCREMENT = 1000;
 
 -- -----------------------------------------------------
@@ -255,14 +256,19 @@ DROP TABLE IF EXISTS treatment_orders ;
 CREATE TABLE IF NOT EXISTS treatment_orders (
 order_id INT NOT NULL AUTO_INCREMENT,
 doctor_id INT NOT NULL,
-admission_id INT NOT NULL,
+patient_id INT NOT NULL,
+admission_id INT,
 treatment_id INT NOT NULL,
 timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (order_id),
+FOREIGN KEY (doctor_id)
+REFERENCES assigned_doctors (doctor_id),
+FOREIGN KEY (patient_id)
+REFERENCES assigned_doctors (patient_id),
 FOREIGN KEY (treatment_id)
 REFERENCES treatments (treatment_id),
 FOREIGN KEY (admission_id)
-REFERENCES assigned_doctors (admission_id),
+REFERENCES admissions (admission_id),
 FOREIGN KEY (doctor_id)
 REFERENCES assigned_doctors (doctor_id))
 AUTO_INCREMENT = 1000;
